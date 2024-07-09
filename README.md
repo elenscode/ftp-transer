@@ -1,0 +1,1 @@
+--source-host 127.0.0.1:2100 --source-user user1 --source-pass pass1 --target-host 127.0.0.1:2200 --target-user user2 --target-pass pass2 --source-path / --target-path /dataset --regex-pattern a.*$  
