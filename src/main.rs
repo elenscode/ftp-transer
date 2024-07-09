@@ -1,8 +1,3 @@
-use std::{
-    path::{Path, PathBuf},
-    str::FromStr,
-};
-
 use chrono::prelude::*;
 use clap::Parser;
 use regex::Regex;
@@ -75,14 +70,10 @@ impl FtpClient {
         for file in files {
             let mut cursor = self.ftp_stream.retr_as_buffer(&file).unwrap();
 
-            let mut abs_path = PathBuf::from_str(target_path).unwrap();
-            let base_name = Path::new(&file).file_name().unwrap();
-            abs_path.push(base_name);
-
+            let base_name = file.split('/').last().unwrap();
+            print!("{}", base_name);
             target_ftp.cwd(target_path).unwrap();
-            target_ftp
-                .put_file(abs_path.to_string_lossy(), &mut cursor)
-                .unwrap();
+            target_ftp.put_file(base_name, &mut cursor).unwrap();
         }
     }
 }
@@ -145,7 +136,9 @@ fn main() {
     let mut target_ftp = FtpClient::new(target_host, target_user, target_pass).ftp_stream;
 
     let filtered_files = source_ftp.filter_files(source_path, regex_pattern);
+    println!("{:?}", filtered_files);
     let time_filtered_files = source_ftp.filter_by_time(filtered_files, start_time, end_time);
+    println!("{:?}", time_filtered_files);
 
     source_ftp.upload_to_target(&mut target_ftp, time_filtered_files, target_path);
 }
