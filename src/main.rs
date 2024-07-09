@@ -141,4 +141,6 @@ fn main() {
     println!("{:?}", time_filtered_files);
 
     source_ftp.upload_to_target(&mut target_ftp, time_filtered_files, target_path);
+    let _ = source_ftp.ftp_stream.quit();
+    let _ = target_ftp.quit();
 }
